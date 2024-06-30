@@ -1,36 +1,19 @@
-# Use the official Node.js latest image as the base image.
-FROM node:latest
+FROM node:16
 
-# Create and change to the app directory.
+# We have to install nodemon globally before moving into the working directory
+RUN npm install -g nodemon
+
+# Create app directory
 WORKDIR /usr/src/app
 
-# Install Puppeteer dependencies.
-RUN apt-get update && apt-get install -y \
-    wget \
-    ca-certificates \
-    fonts-liberation \
-    libappindicator3-1 \
-    libasound2 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libdbus-glib-1-2 \
-    libgtk-3-0 \
-    libnspr4 \
-    libnss3 \
-    libxss1 \
-    lsb-release \
-    xdg-utils \
-    --no-install-recommends \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
 
-# Install Puppeteer
-RUN npm install puppeteer
+RUN npm install
 
-# Copy the application code.
+# Bundle app source
 COPY . .
 
-# Run the web scraper.
-CMD ["node", "Scrapper.js"]
+EXPOSE 8080
+CMD [ "nodemon", "server.js" ]

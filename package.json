@@ -1,12 +1,14 @@
 {
-  "name": "0bcb6a6a-bbef-405a-afda-36898268fa9e",
+  "name": "docker_web_app",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Node.js on Docker",
+  "author": "First Last <first.last@example.com>",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "dependencies": {
+    "express": "^4.16.1",
+    "nodemon": "^3.1.4"
+  }
 }
