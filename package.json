@@ -5,10 +5,11 @@
   "author": "First Last <first.last@example.com>",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^4.16.1",
-    "nodemon": "^3.1.4"
+    "express": "^4.16.1"
   }
 }
+
