@@ -15,7 +15,8 @@ const app = express();
 
 //cors
 let corsOptions = {
-    origin: `http://${HOST}:${PORT}`
+    origin: `http://${HOST}:${PORT}`,
+    optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
@@ -38,10 +39,14 @@ db.sequelize.sync()
 // });
 
 app.get('/', (req, res) => {
-    res.send('Hello Worldss');
+    res.send('Hello Worlds');
 });
 
-require("./app/routes/tutorial.routes")(app);
+require("./app/routes")(app);
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
