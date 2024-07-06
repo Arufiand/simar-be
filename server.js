@@ -5,6 +5,8 @@ const express = require('express');
 const cors = require("cors");
 require("dotenv").config();
 
+
+
 // Constants
 const PORT = 8080;
 const HOST = '0.0.0.0';
@@ -27,13 +29,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
+const Role = db.role;
 db.sequelize.sync()
     .then(() => {
+        // initial();
         console.log("Synced db.");
     })
     .catch((err) => {
         console.log("Failed to sync db: " + err.message);
     });
+
+function initial() {
+    Role.create({
+        id: 1,
+        name: "user"
+    });
+
+    Role.create({
+        id: 2,
+        name: "moderator"
+    });
+
+    Role.create({
+        id: 3,
+        name: "admin"
+    });
+}
+
 // db.sequelize.sync({ force: true }).then(() => {
 //     console.log("Drop and re-sync db.");
 // });
@@ -43,6 +65,5 @@ app.get('/', (req, res) => {
 });
 
 require("./app/routes")(app);
-
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
