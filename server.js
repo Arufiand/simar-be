@@ -43,10 +43,6 @@ app.get('/', (req, res) => {
 });
 
 require("./app/routes")(app);
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
 
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
