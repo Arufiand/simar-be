@@ -19,7 +19,7 @@ services:
     build: .
     volumes:
       - .:/usr/src/app
-    container_name: docker-node-tut
+    container_name: simar-backend
     restart: always
     ports:
       - 4026:8080
