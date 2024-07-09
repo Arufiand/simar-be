@@ -27,14 +27,19 @@ db.division = require("../models/division.model")(sequelize, Sequelize);
 db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
 db.document = require("./document.model")(sequelize, Sequelize);
 
+// Many-to-Many relationship between User and Role
 db.role.belongsToMany(db.user, {
-    through: "user_roles"
+    through: "user_roles",
+    foreignKey: "roleId",
+    otherKey: "userId"
 });
 db.user.belongsToMany(db.role, {
-    through: "user_roles"
+    through: "user_roles",
+    foreignKey: "userId",
+    otherKey: "roleId"
 });
 
-// One-to-One relationship user_detail to user
+// One-to-One relationship between User and User_detail
 db.user.hasOne(db.user_detail, {
     foreignKey: 'userId',
     onDelete: 'CASCADE',
@@ -43,8 +48,8 @@ db.user.hasOne(db.user_detail, {
 db.user_detail.belongsTo(db.user, {
     foreignKey: 'userId'
 });
-// end One-to-One relationship user_detail to user
 
+// One-to-One relationship between Division and User_detail
 db.division.hasOne(db.user_detail, {
     foreignKey: 'divisionID',
     onDelete: 'CASCADE',
@@ -54,14 +59,19 @@ db.user_detail.belongsTo(db.division, {
     foreignKey: 'divisionID'
 });
 
-db.document.hasOne(db.user, {
+// One-to-One relationship between Document and User
+db.user.hasOne(db.document, {
     foreignKey: 'uploaderID',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onDelete: 'CASCADE',  // Cascade delete
+    onUpdate: 'CASCADE'   // Cascade update
 });
-db.user.belongsTo(db.document, {
-    foreignKey: 'uploaderID'
+
+db.document.belongsTo(db.user, {
+    foreignKey: 'uploaderID',
+    onDelete: 'CASCADE',  // Cascade delete
+    onUpdate: 'CASCADE'   // Cascade update
 });
+
 
 db.ROLES = ["user", "admin", "moderator"];
 
