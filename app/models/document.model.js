@@ -1,9 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
-    const document = sequelize.define("documents", {
+    const Document = sequelize.define("documents", {
         document_name: {
             type: Sequelize.DataTypes.STRING,
-            index : true,
-            unique : true,
+            unique: true,
             allowNull: false,
             validate: {
                 notEmpty: true
@@ -29,5 +28,5 @@ module.exports = (sequelize, Sequelize) => {
         },
     });
 
-    return document;
+    return Document;
 };
