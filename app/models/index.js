@@ -52,7 +52,6 @@ db.user_detail.belongsTo(db.user, {
 // One-to-One relationship between Division and User_detail
 db.division.hasOne(db.user_detail, {
     foreignKey: 'divisionID',
-    onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 db.user_detail.belongsTo(db.division, {

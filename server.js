@@ -40,6 +40,11 @@ db.sequelize.sync()
         console.log("Failed to sync db: " + err.message);
     });
 
+// db.sequelize.sync({ force: true }).then(() => {
+//     initial();
+//     console.log("Drop and re-sync db.");
+// });
+
 function initial() {
     Role.create({
         id: 1,
@@ -75,10 +80,6 @@ function initial() {
     })
 
 }
-
-// db.sequelize.sync({ force: true }).then(() => {
-//     console.log("Drop and re-sync db.");
-// });
 
 app.get('/', (req, res) => {
     res.send('Hello Worlds');
