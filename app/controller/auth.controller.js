@@ -1,7 +1,9 @@
 const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
+const UserDetail = db.user_detail;
 const Role = db.role;
+const Division = db.division;
 
 const Op = db.Sequelize.Op;
 
@@ -25,9 +27,21 @@ exports.signup = (req, res) => {
                     }
                 }).then(roles => {
                     user.setRoles(roles).then(() => {
+                        Division.findOne({ where: { id: req.body.division } }).then(division => {
+                            UserDetail.create({
+                                userId : user.id,
+                                fullName : req.body.fullName,
+                                birthDate : req.body.birthDate,
+                                gender : req.body.gender,
+                                divisionID : division.id
+                            })
+                        });
                         res.send({ message: "User was registered successfully!" });
                     });
+
                 });
+
+
             } else {
                 // user role = 1
                 user.setRoles([1]).then(() => {
