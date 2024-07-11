@@ -30,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
 const Role = db.role;
+const Division = db.division;
 db.sequelize.sync()
     .then(() => {
         // initial();
@@ -54,6 +55,25 @@ function initial() {
         id: 3,
         name: "admin"
     });
+
+    Division.create({
+        id : 1,
+        name : "Division 1",
+        remark : "Division 1"
+    });
+
+    Division.create({
+        id : 2,
+        name : "Division 2",
+        remark : "Division 2"
+    });
+
+    Division.create({
+        id : 3,
+        name : "Division 3",
+        remark : "Division 3"
+    })
+
 }
 
 // db.sequelize.sync({ force: true }).then(() => {
