@@ -61,52 +61,59 @@ exports.signup = async (req, res) => {
     }
 };
 
-exports.signin = (req, res) => {
-    User.findOne({
-        where: {
-            username: req.body.username
-        }
-    })
-        .then(user => {
-            if (!user) {
-                return res.status(404).send({ message: "User Not found." });
+exports.signin = async (req, res) => {
+    try {
+        const user = await User.findOne({
+            where: {
+                username: req.body.username
             }
-
-            var passwordIsValid = bcrypt.compareSync(
-                req.body.password,
-                user.password
-            );
-
-            if (!passwordIsValid) {
-                return res.status(401).send({
-                    accessToken: null,
-                    message: "Invalid Password!"
-                });
-            }
-
-            const token = jwt.sign({ id: user.id },
-                config.secret,
-                {
-                    algorithm: 'HS256',
-                    allowInsecureKeySizes: true,
-                    expiresIn: 86400, // 24 hours
-                });
-
-            var authorities = [];
-            user.getRoles().then(roles => {
-                for (let i = 0; i < roles.length; i++) {
-                    authorities.push("ROLE_" + roles[i].name.toUpperCase());
-                }
-                res.status(200).send({
-                    id: user.id,
-                    username: user.username,
-                    email: user.email,
-                    roles: authorities,
-                    accessToken: token
-                });
-            });
-        })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
         });
+
+        if (!user) {
+            return res.status(404).send({ message: "User Not found." });
+        }
+
+        const user_detail = await UserDetail.findOne({
+            where: {
+                userId: user.id
+            }
+        });
+
+        const division_data = await Division.findOne({
+            where: {
+                id : user_detail.divisionID
+            }
+        })
+
+        const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+
+        if (!passwordIsValid) {
+            return res.status(401).send({
+                accessToken: null,
+                message: "Invalid Password!"
+            });
+        }
+
+        const token = jwt.sign({ id: user.id }, config.secret, {
+            algorithm: 'HS256',
+            allowInsecureKeySizes: true,
+            expiresIn: 86400 // 24 hours
+        });
+
+        const roles = await user.getRoles();
+        const authorities = roles.map(role => "ROLE_" + role.name.toUpperCase());
+
+        res.status(200).send({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            fullName: user_detail ? user_detail.fullName : null,
+            division: user_detail ? division_data.name : null,
+            roles: authorities,
+            accessToken: token
+        });
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
 };
+
