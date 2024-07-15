@@ -25,8 +25,6 @@ exports.signup = async (req, res) => {
         }) : null;
 
         const division = await Division.findOne({ where: { id: req.body.division }, transaction: t });
-        console.log(`division ${division}`);
-        console.log(`division body ${req.body.division}`);
         if (!division) {
             throw new Error('Division not found!');
         }
