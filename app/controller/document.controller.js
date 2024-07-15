@@ -7,6 +7,7 @@ exports.create = (req, res) => {
     // Validate request
     if (!req.body.document_name) {
         res.status(400).send({
+            status: "failed",
             message: "Content can not be empty!"
         });
         return;
@@ -23,7 +24,11 @@ exports.create = (req, res) => {
     // Save Tutorial in the database
     Document.create(Document)
         .then(data => {
-            res.send(data);
+             res.status(201).send({
+                status: "success",
+                message: "Document created successfully!",
+                data: data
+            });
         })
         .catch(err => {
             res.status(500).send({
@@ -40,12 +45,16 @@ exports.findAll = (req, res) => {
 
     Document.findAll({ where: condition })
         .then(data => {
-            res.send({res : data});
+             res.status(200).send({
+                status: "success",
+                message: "Document found!",
+                data: data
+            });
         })
         .catch(err => {
             res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving Documents."
+                status: "failed",
+                message: err.message || "Some error occurred while retrieving Documents."
             });
         });
 };
@@ -57,15 +66,21 @@ exports.findOne = (req, res) => {
     Document.findByPk(id)
         .then(data => {
             if (data) {
-                res.send(data);
+             res.status(200).send({
+                status: "success",
+                message: "Document Found",
+                data: data
+            });
             } else {
                 res.status(404).send({
+                    status: "failed",
                     message: `Cannot find Document with id=${id}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
+                status: "failed",
                 message: "Error retrieving Document with id=" + id
             });
         });
@@ -80,17 +95,20 @@ exports.update = (req, res) => {
     })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.status(200).send({
+                    status: "success",
                     message: "Tutorial was updated successfully."
                 });
             } else {
-                res.send({
+                res.status(404).send({
+                    status: "failed",
                     message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
+                status: "failed",
                 message: "Error updating Tutorial with id=" + id
             });
         });
@@ -105,17 +123,20 @@ exports.delete = (req, res) => {
     })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.status(200).send({
+                    status: "success",
                     message: "Tutorial was deleted successfully!"
                 });
             } else {
-                res.send({
+                res.status(404).send({
+                    status: "failed",
                     message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
+                status: "failed",
                 message: "Could not delete Tutorial with id=" + id
             });
         });
@@ -128,10 +149,11 @@ exports.deleteAll = (req, res) => {
         truncate: false
     })
         .then(nums => {
-            res.send({ message: `${nums} Document were deleted successfully!` });
+            res.status(200).send({ status: "success", message: `${nums} Document were deleted successfully!` });
         })
         .catch(err => {
             res.status(500).send({
+                status: "failed",
                 message:
                     err.message || "Some error occurred while removing all Documents."
             });

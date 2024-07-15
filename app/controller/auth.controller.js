@@ -51,11 +51,11 @@ exports.signup = async (req, res) => {
         }, { transaction: t });
 
         await t.commit();
-        res.send({ message: "User was registered successfully!" });
+        res.status(201).send({ status: "success", message: "User was registered successfully!" });
     } catch (error) {
         await t.rollback();
         console.error('Error occurred:', error);
-        res.status(500).send({ message: error.message });
+        res.status(500).send({ status: "failed",  message: error.message });
     }
 };
 
@@ -68,7 +68,7 @@ exports.signin = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(404).send({ message: "User Not found." });
+            return res.status(404).send({status: "failed", message: "User Not found." });
         }
 
         const user_detail = await UserDetail.findOne({
@@ -87,8 +87,9 @@ exports.signin = async (req, res) => {
 
         if (!passwordIsValid) {
             return res.status(401).send({
+                status: "failed",
+                message: "Invalid Password!",
                 accessToken: null,
-                message: "Invalid Password!"
             });
         }
 
@@ -102,13 +103,17 @@ exports.signin = async (req, res) => {
         const authorities = roles.map(role => "ROLE_" + role.name.toUpperCase());
 
         res.status(200).send({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            fullName: user_detail ? user_detail.fullName : null,
-            division: user_detail ? division_data.name : null,
-            roles: authorities,
-            accessToken: token
+            status: "success",
+            message : "Login Successfully",
+            data : {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                fullName: user_detail ? user_detail.fullName : null,
+                division: user_detail ? division_data.name : null,
+                roles: authorities,
+                accessToken: token
+            }
         });
     } catch (err) {
         res.status(500).send({ message: err.message });

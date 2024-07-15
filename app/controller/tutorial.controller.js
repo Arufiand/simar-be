@@ -22,7 +22,11 @@ exports.create = (req, res) => {
     // Save Tutorial in the database
     Tutorial.create(tutorial)
         .then(data => {
-            res.send(data);
+                 res.status(200).send({
+                status: "success",
+                message: "Document created successfully!",
+                data: data
+            });
         })
         .catch(err => {
             res.status(500).send({
@@ -39,7 +43,11 @@ exports.findAll = (req, res) => {
 
     Tutorial.findAll({ where: condition })
         .then(data => {
-            res.send(data);
+                 res.status(200).send({
+                status: "success",
+                message: "Document created successfully!",
+                data: data
+            });
         })
         .catch(err => {
             res.status(500).send({
@@ -56,7 +64,11 @@ exports.findOne = (req, res) => {
     Tutorial.findByPk(id)
         .then(data => {
             if (data) {
-                res.send(data);
+                     res.status(200).send({
+                status: "success",
+                message: "Document created successfully!",
+                data: data
+            });
             } else {
                 res.status(404).send({
                     message: `Cannot find Tutorial with id=${id}.`
@@ -141,7 +153,11 @@ exports.deleteAll = (req, res) => {
 exports.findAllPublished = (req, res) => {
     Tutorial.findAll({ where: { published: true } })
         .then(data => {
-            res.send(data);
+                 res.status(200).send({
+                status: "success",
+                message: "Document created successfully!",
+                data: data
+            });
         })
         .catch(err => {
             res.status(500).send({
